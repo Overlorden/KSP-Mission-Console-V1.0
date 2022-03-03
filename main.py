@@ -122,6 +122,7 @@ while login == False:
             sleep(3)
     else:
         registered = False
+        login = True
 
 # Register Segment
 
@@ -133,9 +134,10 @@ if registered == False:
         password = input('\n\nEnter a Password to register with.\nPassword: ')
         hashword = hashlib.sha256(password.encode('utf-8')).hexdigest()
         with open('login.txt','a') as file:
-            file.write('hashname\n')
-            file.write('hashword')
-        print('\n\nRegistered Successfully. Please restart to login.')
+            file.write(f'{hashname}\n')
+            file.write(f'{hashword}')
+        print('\n\nRegistered Successfully. Welcome to the KSP Console.')
+        sleep(2)
         registered = True
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
@@ -377,5 +379,3 @@ while login == True:
         else:
             pass
             choice = ' '
-
-input()
