@@ -19,6 +19,7 @@
 # 06 - Add Mission Function
 # 07 - End Mission Function
 # 08 - Individual Kerbal Editing Function
+# 09 - Probes and Rovers
 
 # Code Keys are numeric identifiers for big segments of code, or important parts.
 # These segments are coded to make it easier to find and edit for updates or fixes.
@@ -56,6 +57,11 @@ try: # Try will attempt to run the code in the indented section underneath.
     open('login.txt','x') # If login.txt does not exist, then this line will create a file called 'kerbals.txt'
 except Exception: # If an error is raised:
     pass # Continue to the next part. Pass does nothing.
+
+try:
+    open('probes.txt','x')
+except Exception:
+    pass
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
@@ -379,11 +385,46 @@ def individualkerbaledit():
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
+# 09.
+# Probes and Rovers
+
+def addprobe():
+
+    probes = []
+
+    with open('probes.txt','r') as file:
+        for lines in file:
+            probes.append(lines)
+
+    typeloading('Probe Data')
+
+    probename = input('\n\nEnter the name of the Probe.\nName: ').title()
+    probetype = input('\nEnter the type: Rover, Probe, Relay.\nType: ').title()
+
+    planetset = False
+    while planetset == False:
+        probeorbit = input('\nEnter the celestial body this will orbit / land on.\nInput: ').title()
+        planetset = True
+
+    probes.append('- -\n')
+    probes.append(f'~ Probe Name: {probename}\n')
+    probes.append(f'~ Probe Type: {probetype}\n')
+    probes.append(f'~ Body: {probeorbit}\n')
+    probes.append('- -\n\n')
+
+    with open('probes.txt','r+') as file:
+        file.truncate(0)
+    
+    with open('probes.txt','a') as file:
+        for lines in probes:
+            file.write(lines)
+
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
 currentmissions = 0
+currentprobes = 0
 kerbalonmissions = 0
 
 with open('missions.txt','r') as file:
@@ -393,19 +434,28 @@ with open('missions.txt','r') as file:
         if 'Kerbal' in lines:
             kerbalonmissions += 1
 
+with open('probes.txt','r') as file:
+    for lines in file:
+        if '~' in lines:
+            currentprobes += 1
+
+currentprobes = int(currentprobes / 3)
+
 kerbalonmissions -= currentmissions
 
 if login == True:
     print('\n# ~ - ~ - ~ - ~ - ~ #')
     typeword(f'\nWelcome Back {username}\n')
     typeword(f'\nYou Have: {str(currentmissions)} active missions.')
-    typeword(f'\nYou Have: {str(kerbalonmissions)} active kerbals on missions.\n')
+    typeword(f'\nYou Have: {str(kerbalonmissions)} active kerbals on missions.')
+    typeword(f'\nYou Have: {str(currentprobes)} active probes or rovers.\n')
 
 while login == True:
     print('\n# ~ - ~ - ~ - ~ - ~ #\n')
 
     typeword('Type KERBAL to enter Kerbal Configuration.\n')
     typeword('Type MISSION to enter Mission Configuration.\n')
+    typeword('Type PROBE to enter Probe Configuration.\n')
     typeword('Type EXIT to exit the program.\n')
     choice = input('\nChoice: ').upper()
 
@@ -448,6 +498,22 @@ while login == True:
                 choice = ' '
             else:
                 pass
+    
+    if choice == 'PROBE':
+        print('\n# ~ - ~ - ~ - ~ - ~ #')
+        typeloading('Probe Config Menu')
+        while choice == 'PROBE':
+            print('\n')
+            typeword('Type NEW to add a new Probe.\n')
+            typeword('Type BACK to go back to the main console.\n')
+            probechoice = input('\nChoice: ').upper()
+            if probechoice == 'NEW':
+                addprobe()
+                probechoice = ' '
+            if probechoice == 'BACK':
+                choice = ' '
+            else:
+                choice = ' '
 
     if choice == 'EXIT':
         exitsure = input('\nAre you sure you want to exit?\nChoice: ')
