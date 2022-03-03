@@ -96,7 +96,7 @@ with open('login.txt','r') as file:
 # Login Segment
 
 login = False
-registered = True
+registered = False
 
 if login == False and len(loginstuff) > 0:
     typeloading('Login Data')
