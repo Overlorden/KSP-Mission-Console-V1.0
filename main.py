@@ -18,6 +18,7 @@
 # 05 - Add Kerbal Function
 # 06 - Add Mission Function
 # 07 - End Mission Function
+# 08 - Individual Kerbal Editing Function
 
 # Code Keys are numeric identifiers for big segments of code, or important parts.
 # These segments are coded to make it easier to find and edit for updates or fixes.
@@ -177,7 +178,7 @@ def addnewkerbal():
         for lines in kerbaldata:
             file.write(lines)
 
-    print('\nKerbal Registration Complete.\n\n')
+    print('\nKerbal Registration Complete.\n')
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
@@ -199,21 +200,43 @@ def addnewmission():
     print(' ')
     typeloading('Mission Data')
 
-    missionname = input('\nEnter the missions name.\nName: ')
+    missionname = input('\n\nEnter the missions name.\nName: ')
     missionlocation = input('\nEnter the mission location.\nLocation: ')
 
     kerbalcount = int(input('\nEnter kerbal count for this mission.\nNumber: '))
 
     activekerbals = []
 
-    for x in range(kerbalcount):
-        addkerbal = input(f'\nEnter Kerbal {x+1}.\nName: ')
-        activekerbals.append(addkerbal)
-        for lines in kerbaldata:
-            if addkerbal in lines:
-                position = kerbaldata.index(lines)
-                kerbaldata[position+2] = f'Mission: {missionname}\n'
-                kerbaldata[position+3] = f'Location: {missionlocation}\n'
+    kerbalset = False
+    kerbalnumber = 0
+
+    while kerbalset == False:
+        for x in range(kerbalcount):
+            kerbalnumber += 1
+            addkerbal = input(f'\nEnter Kerbal {kerbalnumber}.\nName: ')
+            for lines in kerbaldata:
+                if addkerbal in lines:
+                    if 'None' in kerbaldata[kerbaldata.index(lines)+2]:
+                        activekerbals.append(addkerbal)
+                        position = kerbaldata.index(lines)
+                        kerbaldata[position+2] = f'Mission: {missionname}\n'
+                        kerbaldata[position+3] = f'Location: {missionlocation}\n'
+                    else:
+                        print('\nYou can not add an active Kerbal to another mission. Retry in 2 seconds.\n')
+                        sleep(2)
+                        kerbalnumber = kerbalnumber - 1
+                    
+                    if kerbalnumber == kerbalcount:
+                        kerbalset = True
+                    else:
+                        pass
+
+                    break
+                    
+
+                    
+                    
+
 
     missiondata.append('-\n')
     missiondata.append(f'Mission Name: {missionname}\n')
@@ -301,6 +324,59 @@ def endmission():
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
+# 08.
+# Individual Editing Function
+
+def individualkerbaledit():
+    kerbaldata = []
+
+    with open('kerbals.txt','r') as file:
+        for lines in file:
+            kerbaldata.append(lines)
+
+    print(' ')
+    typeloading('Kerbal Data')
+    print('\n')
+
+    kerbalname = input('Enter the name of the Kerbal you want to edit.\nName: ')
+
+    valid = True
+
+    for lines in kerbaldata:
+        if kerbalname in lines:
+            position = kerbaldata.index(lines)
+    
+    if 'None' not in kerbaldata[position+2]:
+        valid = False
+        print('\nYou can not edit Kerbals while they are Active. Returning to Menu.')
+        sleep(1.5)
+
+    active = True
+
+    if valid == True:
+        while active == True:
+            print(' ')
+            for x in range(-1,6):
+                print(kerbaldata[position+x])
+            choice = input('\nType a category to change. Type STOP to end.\nInput: ').title()
+            if choice.upper() == 'STOP':
+                active = False
+                continue
+            change = input(f'\nWhat would you like to change {choice} to?\nInput: ')
+            for x in range(position, position+5):
+                if choice in kerbaldata[x]:
+                    kerbaldata[x] = f'{choice}: {change}\n'
+                else:
+                    pass
+        
+
+    with open('kerbals.txt','r+') as file:
+        file.truncate(0)
+    
+    with open('kerbals.txt','a') as file:
+        for lines in kerbaldata:
+            file.write(lines)
+
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
 
 # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ #
@@ -339,10 +415,14 @@ while login == True:
         while choice == 'KERBAL':
             print('\n')
             typeword('Type ADD to register a new Kerbal.\n')
+            typeword('Type EDIT to edit a specific Kerbal.\n')
             typeword('Type BACK to go back to the main console.\n')
             kerbalchoice = input('\nChoice: ').upper()
             if kerbalchoice == 'ADD':
                 addnewkerbal()
+                kerbalchoice = ' '
+            if kerbalchoice == 'EDIT':
+                individualkerbaledit()
                 kerbalchoice = ' '
             if kerbalchoice == 'BACK':
                 choice = ' '
