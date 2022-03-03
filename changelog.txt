@@ -1,0 +1,15 @@
+v1.0 
+- Kerbal Adding
+- Mission Adding
+- Mission Removing
+- Main Code Needed.
+
+v1.1
+- Specific Kerbal Customisation in specific categories (Name, Occupation, Mission, Location, Status)
+- Mission Overlapping Patch
+- UI Improvements
+
+v1.2
+- Probes and Rovers category added.
+- Small Fixes
+- New active probes display
